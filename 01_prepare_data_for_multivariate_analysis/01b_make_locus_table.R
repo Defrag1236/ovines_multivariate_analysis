@@ -36,6 +36,15 @@ snp_name_from_chip <- snp_name_from_chip[snp_name_from_chip[,2] %in% rownames(s_
 
 snp_name_from_chip <- snp_name_from_chip[order(snp_name_from_chip[,2]),]
 
+## make alleles columns 
+
+alleles <- cbind(snp_info[,8:9], paste(snp_info$Chr, snp_info$Position, sep=":"))
+alleles <- alleles[alleles[,3] %in% rownames(s_all_p_value),]
+
+alleles <- alleles[order(alleles[,3]),]
+alleles <- alleles[!is.na(alleles$A1), ]
+
+
 ## separate and make chr and pos columns 
 
 chr_pos <- as.data.frame(rownames (s_all_p_value))
@@ -47,15 +56,17 @@ rownames(chr_pos_clear) <- rownames(s_all_p_value)
 
 ## compare and make the same dimensions for all columns
 
+snp_name_from_chip <- snp_name_from_chip[snp_name_from_chip[,2] %in% alleles[,3],]
+
 chr_pos_clear <- chr_pos_clear[rownames(chr_pos_clear) %in% snp_name_from_chip[,2],]
 s_all_p_value <- s_all_p_value[rownames(s_all_p_value) %in% snp_name_from_chip[,2],]
 snp_name_from_chip <- snp_name_from_chip[!duplicated(snp_name_from_chip[,2]),]
-
+alleles <- alleles [!duplicated(alleles[,3]),]
 
 ## rbind all in locus table
 
-locus_table <- cbind(snp_name_from_chip[,1], chr_pos_clear, s_all_p_value)
-colnames(locus_table) <- c("SNP", "CHR", "POS", colnames(s_all))
+locus_table <- cbind(snp_name_from_chip[,1], chr_pos_clear, alleles[,1:2], s_all_p_value)
+colnames(locus_table) <- c("SNP", "CHR", "POS", "A1", "A0", colnames(s_all))
 
 
 # save clear locus table as .Rdata

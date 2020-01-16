@@ -61,7 +61,7 @@ function_for_shlop_28_12_2017=function(locus_table,p_value="P",pos="POS",snp="SN
 
 shlop_list <- list()
 
-for (n in(4:59)) {
+for (n in(6:61)) {
 
 	x <- colnames(locus_table[n])
 
