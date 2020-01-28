@@ -66,7 +66,7 @@ for (n in(6:61)) {
 	x <- colnames(locus_table[n])
 
 	shlop_result <-  function_for_shlop_28_12_2017(locus_table[,c(1:3, n)], p_value=x, pos="POS",snp="SNP",
-                                       delta=2.5e5,chr="CHR",thr=0.05/nrow(locus_table),trait=NULL)
+                                       delta=2.5e5,chr="CHR",thr=(0.05/(nrow(locus_table)*48)),trait=NULL)
 
 	trait  <- rep (x, times=nrow(shlop_result))
 
@@ -82,7 +82,7 @@ for (n in(6:61)) {
 shlop_all <- do.call (rbind, shlop_list)
 
 shlop_result_all <- function_for_shlop_28_12_2017(shlop_all, p_value="P", pos="POS",snp="SNP",
-                                       delta=2.5e5,chr="CHR",thr=0.05/nrow(locus_table),trait="trait")
+                                       delta=2.5e5,chr="CHR",thr=(0.05/(nrow(locus_table)*48)),trait="trait")
 
 
 # save clumping result
