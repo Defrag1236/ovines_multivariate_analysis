@@ -123,7 +123,7 @@ shlop_result_all_stephens_mv <- function_for_shlop_28_12_2017(shlop_all_stephens
 
 fwrite("clumping_for_all_mv_stephens.txt", x=shlop_result_all_stephens_mv,col.names=TRUE,row.names=FALSE,quote=FALSE,sep="\t")
 
-# do common clumping for Bolormaa and mv_stephens_Bolormaa
+# do common clumping for uv Bolormaa and mv_stephens_Bolormaa
 
 shlop_general_stephens <- rbind(shlop_all[,1:5], shlop_all_stephens_mv[,1:5])
 
@@ -131,3 +131,40 @@ shlop_result_general_stephens <- function_for_shlop_28_12_2017(shlop_general_ste
                                        delta=2.5e5,chr="CHR",thr=(0.05/(nrow(locus_table)*(48+8))),trait="trait")
 
 fwrite("clumping_for_all_mv_stephens_and_uv.txt", x=shlop_result_general_stephens,col.names=TRUE,row.names=FALSE,quote=FALSE,sep="\t")
+
+
+# do common clumping for uv_Bolormaa, mv_stephens_Bolormaa and pc_Bolormaa
+
+pc_snps <- read.table("/home/common/projects/ovine_selection/Data/PC_data_lead_SNP_from_Bolormaa.txt", head=F, stringsAsFactors=F, sep="\t")
+rownames(pc_snps) <- paste(as.numeric(pc_snps[,3]), as.numeric(pc_snps[,4]), sep=":")
+
+pc_snps <- pc_snps[,c(1,3:4)]
+
+pc_snps <- pc_snps[order(rownames(pc_snps)),]
+
+snp_names_for_pc <- matrix(ncol=1, nrow=65)
+
+snp_names_for_pc[,1] <- as.character(locus_table[rownames(locus_table) %in% rownames(pc_snps),1])
+
+rownames(snp_names_for_pc) <- rownames(locus_table[(rownames(locus_table) %in% rownames(pc_snps)),])
+
+not_in_locus_table <- as.matrix(rownames(pc_snps[!(rownames(pc_snps) %in% rownames(snp_names_for_pc)),]))
+rownames(not_in_locus_table) <- not_in_locus_table[1:5,1]
+
+snp_names_for_pc <- rbind(snp_names_for_pc, not_in_locus_table)
+
+pc_snps_clear <- cbind(pc_snps[order(rownames(pc_snps)),], snp_names_for_pc[order(rownames(snp_names_for_pc)),], 0.05/(nrow(locus_table)*(48+8)))
+
+colnames(pc_snps_clear) <- c("trait", "CHR", "POS", "SNP", "P")
+
+pc_snps_clear <- pc_snps_clear[,c("SNP", "CHR", "POS", "P", "trait")]
+
+shlop_general_with_pc <- rbind(shlop_all[,1:5], shlop_all_stephens_mv[,1:5], pc_snps_clear)
+
+shlop_general_with_pc[,1] <- paste(shlop_general_with_pc$CHR,shlop_general_with_pc$POS,sep="_")
+rownames(shlop_general_with_pc) <- c()
+
+shlop_result_general_with_pc <- function_for_shlop_28_12_2017(shlop_general_with_pc, p_value="P", pos="POS",snp="SNP",
+                                       delta=2.5e5,chr="CHR",thr=(0.05/(nrow(locus_table)*(48+8))),trait="trait")
+
+fwrite("clumping_for_all_mv_stephens_and_uv_and_pc_Bolormaa.txt", x=shlop_result_general_with_pc,col.names=TRUE,row.names=FALSE,quote=FALSE,sep="\t")
