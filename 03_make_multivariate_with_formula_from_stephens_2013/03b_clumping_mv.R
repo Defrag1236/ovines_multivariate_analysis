@@ -168,3 +168,20 @@ shlop_result_general_with_pc <- function_for_shlop_28_12_2017(shlop_general_with
                                        delta=2.5e5,chr="CHR",thr=(0.05/(nrow(locus_table)*(48+8))),trait="trait")
 
 fwrite("clumping_for_all_mv_stephens_and_uv_and_pc_Bolormaa.txt", x=shlop_result_general_with_pc,col.names=TRUE,row.names=FALSE,quote=FALSE,sep="\t")
+
+# do clumping with database snps
+
+database_snps <- read.table("/home/common/projects/ovine_selection/ovines_multivariate_analysis/data/snps_from_database.txt", head=T, stringsAsFactors=F, sep="\t")
+
+database_snps <- cbind(database_snps, (0.05/(nrow(locus_table)*(48+8))), "database")
+
+colnames(database_snps) <- c("SNP", "CHR", "POS", "P", "trait")
+
+database_snps[which(database_snps$SNP=="empty"),1] <- paste(database_snps[which(database_snps$SNP=="empty"),2], database_snps[which(database_snps$SNP=="empty"),3], sep=":") 
+
+shlop_with_db <- rbind(database_snps, shlop_general_with_pc)
+
+shlop_with_db_result <- function_for_shlop_28_12_2017(shlop_with_db, p_value="P", pos="POS",snp="SNP",
+                                       delta=2.5e5,chr="CHR",thr=(0.05/(nrow(locus_table)*(48+8))),trait="trait")
+
+fwrite("clumping_for_all_mv_stephens_and_uv_and_pc_Bolormaa_with_db.txt", x=shlop_with_db_result,col.names=TRUE,row.names=FALSE,quote=FALSE,sep="\t")
