@@ -185,3 +185,36 @@ shlop_with_db_result <- function_for_shlop_28_12_2017(shlop_with_db, p_value="P"
                                        delta=2.5e5,chr="CHR",thr=(0.05/(nrow(locus_table)*(48+8))),trait="trait")
 
 fwrite("clumping_for_all_mv_stephens_and_uv_and_pc_Bolormaa_with_db.txt", x=shlop_with_db_result,col.names=TRUE,row.names=FALSE,quote=FALSE,sep="\t")
+
+# do clumping for mv and pc_Bolormaa
+
+shlop_mv_with_pc <- rbind(shlop_all_stephens_mv[,1:5], pc_snps_clear)
+
+shlop_mv_with_pc[,1] <- paste(shlop_mv_with_pc$CHR,shlop_mv_with_pc$POS,sep="_")
+rownames(shlop_mv_with_pc) <- c()
+
+shlop_result_mv_with_pc <- function_for_shlop_28_12_2017(shlop_mv_with_pc, p_value="P", pos="POS",snp="SNP",
+                                       delta=2.5e5,chr="CHR",thr=(0.05/(nrow(locus_table)*(48+8))),trait="trait")
+
+fwrite("clumping_for_all_mv_stephens_and_pc_Bolormaa.txt", x=shlop_result_mv_with_pc,col.names=TRUE,row.names=FALSE,quote=FALSE,sep="\t")
+
+# make new clumping with 3 mv traits
+
+shlop_new_stephens_mv <- shlop_all_stephens_mv[c(1:(nrow(shlop_list_stephens_mv[[1]])+nrow(shlop_list_stephens_mv[[2]])+nrow(shlop_list_stephens_mv[[3]]))),]
+
+shlop_result_new_stephens_mv <- function_for_shlop_28_12_2017(shlop_new_stephens_mv[,1:5], p_value="P", pos="POS",snp="SNP",
+                                       delta=2.5e5,chr="CHR",thr=(0.05/(nrow(locus_table)*(48+3))),trait="trait")
+
+fwrite("clumping_for_3_traits_mv_stephens.txt", x=shlop_result_new_stephens_mv,col.names=TRUE,row.names=FALSE,quote=FALSE,sep="\t")
+
+# do clumping for 3 mv traits and pc_Bolormaa
+
+shlop_mv3_with_pc <- rbind(shlop_new_stephens_mv[,1:5], pc_snps_clear)
+
+shlop_mv3_with_pc[,1] <- paste(shlop_mv3_with_pc$CHR,shlop_mv3_with_pc$POS,sep="_")
+rownames(shlop_mv3_with_pc) <- c()
+
+shlop_result_mv3_with_pc <- function_for_shlop_28_12_2017(shlop_mv3_with_pc, p_value="P", pos="POS",snp="SNP",
+                                       delta=2.5e5,chr="CHR",thr=(0.05/(nrow(locus_table)*(48+3))),trait="trait")
+
+fwrite("clumping_for_3_mv_stephens_and_pc_Bolormaa.txt", x=shlop_result_mv3_with_pc,col.names=TRUE,row.names=FALSE,quote=FALSE,sep="\t")
