@@ -6,6 +6,10 @@
 # load data 
 
 new_snps <- read.table("/home/common/projects/ovine_selection/ovines_multivariate_analysis/results/mv_snps_to_regional_association_plot.txt", head=F, stringsAsFactors=F)
+chr6 <- read.table("/home/common/projects/ovine_selection/ovines_multivariate_analysis/data/for_regional_association_plot/locus_table_6chr_31_42mb.txt", head=T, stringsAsFactors=F)
+chr11 <-  read.table("/home/common/projects/ovine_selection/ovines_multivariate_analysis/data/for_regional_association_plot/locus_table_11chr_24_28,5mb.txt", head=T, stringsAsFactors=F)
+
+# make plots for new snps
 
 for (n in (1:nrow(new_snps))) {
   # interesting (best) SNP
@@ -36,3 +40,61 @@ for (n in (1:nrow(new_snps))) {
   dev.off()
 
 }
+
+# make plots fo interesring regions
+
+## 6chr 
+
+  snp       <- chr6[which.min(chr6$PVAL),5]
+  # title of plot
+  locusname <- paste("6chr_31_42mb", sep="")
+  # locus file (e.g. output of "building_locus_file.r")
+  locus     <- chr6
+  # known genes path
+  known_genes_path <- "na"  
+  # path for plot
+  pfad_ausgabe <- paste("/home/common/projects/ovine_selection/ovines_multivariate_analysis/results/plots/assocplot_LDregions_6chr_31_42mb.pdf", sep="")
+  # range of y-axis (P-values) 
+  minimaler_pwert <- min(locus[,6])
+  range_graph     <- round(-(log10(minimaler_pwert))+1)
+  # pvalue of interesting (best) SNP
+  pval_snp    <- locus[locus[,5]==snp,6]
+  # Build dependend on used HapMap version for SNAP informations
+  build_ncbi       <- "b36"
+  # plattform used 
+  plattform   <- "linux"
+
+  # open plot
+  pdf(pfad_ausgabe, width=6, height=6)
+  # call function
+  make.fancy.locus.plot(snp, locusname, locus, range_graph, pval_snp, build_ncbi, plattform, known_genes_path)
+  # close plot
+  dev.off()
+
+## 11chr 
+
+  snp       <- chr11[which.min(chr11$PVAL),5]
+  # title of plot
+  locusname <- paste("11chr_24_28,5mb", sep="")
+  # locus file (e.g. output of "building_locus_file.r")
+  locus     <- chr11
+  # known genes path
+  known_genes_path <- "na"  
+  # path for plot
+  pfad_ausgabe <- paste("/home/common/projects/ovine_selection/ovines_multivariate_analysis/results/plots/assocplot_LDregions_11chr_24_28,5mb.pdf", sep="")
+  # range of y-axis (P-values) 
+  minimaler_pwert <- min(locus[,6])
+  range_graph     <- round(-(log10(minimaler_pwert))+1)
+  # pvalue of interesting (best) SNP
+  pval_snp    <- locus[locus[,5]==snp,6]
+  # Build dependend on used HapMap version for SNAP informations
+  build_ncbi       <- "b36"
+  # plattform used 
+  plattform   <- "linux"
+
+  # open plot
+  pdf(pfad_ausgabe, width=6, height=6)
+  # call function
+  make.fancy.locus.plot(snp, locusname, locus, range_graph, pval_snp, build_ncbi, plattform, known_genes_path)
+  # close plot
+  dev.off()
