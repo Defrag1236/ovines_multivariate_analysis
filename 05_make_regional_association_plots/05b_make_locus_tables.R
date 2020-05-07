@@ -1,7 +1,7 @@
 ### make locus tables for regional association plot ### 
 
 
-# load 
+# load data
 
 setwd("/home/common/projects/ovine_selection/ovines_multivariate_analysis/results/mv_rdata/mv_stephens_formula")
 
@@ -94,33 +94,6 @@ colnames(snp_6chr[,3]) <- c("RSquared")
 
 write.table(snp, "/home/common/projects/ovine_selection/ovines_multivariate_analysis/data/for_regional_association_plot/locus_table_6chr_31_42mb.txt", row.names=F, quote=F)
 
-## 6 chr 31-42 mb
-	
-snp_6chr <- subset(for_plot,  for_plot[,2]==6, select=1:7)
-snp_6chr <- subset(snp_6chr, snp_6chr[,1]<42000000, select=1:7)
-snp_6chr <- subset(snp_6chr, snp_6chr[,1]>31000000, select=1:7)
-
-top_6chr <- snp_6chr[which.min(snp_6chr$PVAL),5]
-
-top_chr_pos <- strsplit(top, ":")
-top_chr_pos <- do.call(cbind, top_chr_pos)
-top_chr_pos <- apply(top_chr_pos, 2, as.numeric)
-
-
-z_snp_6chr <- s_all[which(rownames(s_all) %in% snp_6chr[,5]),]
-
-z_top_6chr <- z_snp_6chr[which(rownames(z_snp_6chr) %in% top_6chr),]
-
-r_snp_6chr <- cor(t(z_top_6chr), t(z_snp_6chr))
-
-r2_snp_6chr <- r_snp_6chr^2 
-
-snp_6chr[,3] <- t(r2_snp_6chr) 
-
-colnames(snp_6chr[,3]) <- c("RSquared")
-
-write.table(snp_6chr, "/home/common/projects/ovine_selection/ovines_multivariate_analysis/data/for_regional_association_plot/locus_table_6chr_31_42mb.txt", row.names=F, quote=F)
-
 ## 11 chr 24-28.5 mb
 	
 snp_11chr <- subset(for_plot,  for_plot[,2]==11, select=1:7)
@@ -148,6 +121,33 @@ colnames(snp_11chr[,3]) <- c("RSquared")
 
 write.table(snp_11chr, "/home/common/projects/ovine_selection/ovines_multivariate_analysis/data/for_regional_association_plot/locus_table_11chr_24_28,5mb.txt", row.names=F, quote=F)
 
+
+## 18 chr 62-67 mb
+	
+snp_18chr <- subset(for_plot,  for_plot[,2]==18, select=1:7)
+snp_18chr <- subset(snp_18chr, snp_18chr[,1]<67000000, select=1:7)
+snp_18chr <- subset(snp_18chr, snp_18chr[,1]>62000000, select=1:7)
+
+top_18chr <- snp_18chr[which.min(snp_18chr$PVAL),5]
+
+top_chr_pos <- strsplit(top, ":")
+top_chr_pos <- do.call(cbind, top_chr_pos)
+top_chr_pos <- apply(top_chr_pos, 2, as.numeric)
+
+
+z_snp_18chr <- s_all[which(rownames(s_all) %in% snp_18chr[,5]),]
+
+z_top_18chr <- z_snp_18chr[which(rownames(z_snp_18chr) %in% top_18chr),]
+
+r_snp_18chr <- cor(t(z_top_18chr), t(z_snp_18chr))
+
+r2_snp_18chr <- r_snp_18chr^2 
+
+snp_18chr[,3] <- t(r2_snp_18chr) 
+
+colnames(snp_18chr[,3]) <- c("RSquared")
+
+write.table(snp_18chr, "/home/common/projects/ovine_selection/ovines_multivariate_analysis/data/for_regional_association_plot/locus_table_18chr_62_67mb.txt", row.names=F, quote=F)
 
 #ld_snp <- ld_clear[which(ld_clear[,1] %in% snp[,5]),]
 
