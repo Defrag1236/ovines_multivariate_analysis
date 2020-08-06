@@ -68,15 +68,66 @@ corrplot(r2_snp_s, insig ="pch", sig.level=0.05/((20*19)/2), method="square", p.
 
 dev.off()
 
-# make  Hierarchical clustering plot
-
+# make  Hierarchical clustering plot and dendrograme plot
 
 r2_snp_s_with_gene_names <- r2_snp_s
 colnames(r2_snp_s_with_gene_names) <- gene_names[,2]
 rownames(r2_snp_s_with_gene_names) <- gene_names[,2]
 
+d <- 1-r2_snp_s_with_gene_names
+d <- as.dist(d)
+
+h1 <- hclust(d,method="ward.D2")
+
+
+png("hclust_mv_snps.png", width=1920, height=1080)
+
+plot(h1,hang = -1)
+
+dev.off()
+
+dplot <- r2_snp_s_with_gene_names[h1$order, h1$order]
+
 png("Heatmap_mv_snps.png", width=1920, height=1080)
 
-heatmap(r2_snp_s_with_gene_names, scale = "none")
+corrplot(corr = dplot,method = "square",tl.col="black", tl.srt = 75)
+
+dev.off()
+
+# make graph plot
+
+for_graph_plot <- matrix(ncol=20, nrow=20)
+colnames(for_graph_plot) <- colnames(r2_snp_s_with_gene_names)
+rownames(for_graph_plot) <- colnames(r2_snp_s_with_gene_names)
+
+for (n in 1:20) {
+
+	for (i in (1:20)) {
+
+		if(r2_p_s[n,i]<=0.05/((20*19)/2)) {
+
+			for_graph_plot[n,i] <- 1
+			
+			
+			}
+
+		else
+
+		for_graph_plot[n,i] <- 0
+
+		}
+
+	}
+
+
+diag(for_graph_plot) <- 0
+
+library(igraph)
+
+l=graph_from_adjacency_matrix(as.matrix(for_graph_plot), mode = c("undirected"),weighted=TRUE)
+
+png("graph_plot_mv_snps.png", width=1920, height=1080)
+
+plot.igraph(l,vertex.label=V(l)$name,layout=layout.fruchterman.reingold, edge.color="black",edge.width=E(l)$weight*5)
 
 dev.off()
