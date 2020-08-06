@@ -102,7 +102,7 @@ for (n in (1:8)) {
     cycle_chr_pos <- cbind(m37, y, x)
     colnames(cycle_chr_pos) <- c("SNP", "CHR", "POS", "P", "trait")
     
-    clumped <- function_for_shlop_28_12_2017(locus_table=cycle_chr_pos,p_value="P",pos="POS",snp="SNP",delta=5e5, chr="CHR",thr=(0.05/(nrow(locus_table)*(48+8))), trait="trait")
+    clumped <- function_for_shlop_28_12_2017(locus_table=cycle_chr_pos,p_value="P",pos="POS",snp="SNP",delta=5e5, chr="CHR",thr=(0.05/(nrow(locus_table)*(48+3))), trait="trait")
 
   
 
@@ -119,7 +119,7 @@ for (n in (1:8)) {
 shlop_all_stephens_mv <- do.call (rbind, shlop_list_stephens_mv)
 
 shlop_result_all_stephens_mv <- function_for_shlop_28_12_2017(shlop_all_stephens_mv[,1:5], p_value="P", pos="POS",snp="SNP",
-                                       delta=2.5e5,chr="CHR",thr=(0.05/(nrow(locus_table)*(48+8))),trait="trait")
+                                       delta=2.5e5,chr="CHR",thr=(0.05/(nrow(locus_table)*(48+3))),trait="trait")
 
 fwrite("clumping_for_all_mv_stephens.txt", x=shlop_result_all_stephens_mv,col.names=TRUE,row.names=FALSE,quote=FALSE,sep="\t")
 

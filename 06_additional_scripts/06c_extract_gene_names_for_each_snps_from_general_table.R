@@ -4,11 +4,11 @@
 
 setwd("/home/common/projects/ovine_selection/ovines_multivariate_analysis/results")
 
-snps <- read.table("general_table_for_paper.txt", head=T, stringsAsFactors=F)
+snps <- read.table("general_table_new_threshold.txt", head=T, stringsAsFactors=F)
 
 gene_annot <- read.table("/home/common/projects/ovine_selection/Data/oar_3.1_gene_info/oar_3.1_gene_info.txt", head=T, stringsAsFactors=F)
 
-library(diplyr)
+library(dplyr)
 
 # extract gene names
 
@@ -32,14 +32,12 @@ for (n in (1:nrow(snps))) {
 
 }
 
-gene_names <- gene_names[c(1:5,10)]
+snps_with_gene_names <- snps[,c(1:3)]
+snps_with_gene_names$gene_names <- gene_names
 
-new_snps_with_gene_names <- snps[c(1:5,10), c(1:3)]
-new_snps_with_gene_names$gene_names <- gene_names
-
-new_snps_with_gene_names$gene_names <- vapply(new_snps_with_gene_names$gene_names, paste, collapse = ", ", character(1L))
+snps_with_gene_names$gene_names <- vapply(snps_with_gene_names$gene_names, paste, collapse = ", ", character(1L))
 
 # save result
 
 
-write.table(new_snps_with_gene_names,"new_mv_snps_with_gene_name.txt", col.names=T, row.names=F, quote=F)
+write.table(snps_with_gene_names,"mv_snps_with_gene_name.txt", col.names=T, row.names=F, quote=F)

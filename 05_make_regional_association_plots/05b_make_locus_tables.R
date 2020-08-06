@@ -6,6 +6,7 @@
 setwd("/home/common/projects/ovine_selection/ovines_multivariate_analysis/results/mv_rdata/mv_stephens_formula")
 
 load("multi_weight.Rdata")
+load("multi_fat.Rdata")
 
 setwd("/home/common/projects/ovine_selection/ovines_multivariate_analysis/data/rdata")
 
@@ -34,10 +35,10 @@ chr_pos<- apply(chr_pos, 2, as.numeric)
 for_plot <- data.frame("Coordinate_HG18"=chr_pos[,2],"Chromosome"= chr_pos[,1],"RSquared"=0, "RecombinationRate"=0, "Proxy"=rownames(p_value_weight_multivariate),
 						 "PVAL"=p_value_weight_multivariate, "TYPE"=rep("imputed",length(p_value_weight_multivariate)), stringsAsFactors=F)
 
-# make locus table for each new snp
+# make locus table for each new snp associated with multi_weight
 
 
-for (n in (1:nrow(new_snps))) {
+for (n in (c(1:8, 10, 13:20))) {
 
 	top <- new_snps[n,1]
 
@@ -61,9 +62,55 @@ for (n in (1:nrow(new_snps))) {
 
 	colnames(snp[,3]) <- c("RSquared")
 
+	if (length(snp[snp$PVAL==min(snp$PVAL, na.rm=T),1])>1) {
+
+		snp[grepl(top, snp$Proxy),"PVAL"] <- snp[grepl(top, snp$Proxy),"PVAL"]-0.00000000000001
+
+	}
+
 	write.table(snp, paste("/home/common/projects/ovine_selection/ovines_multivariate_analysis/data/for_regional_association_plot/locus_table_", top, ".txt", sep=""), row.names=F, quote=F)
 
 }
+
+# make locus table for each new snp associated with multi_fat
+
+for_plot <- data.frame("Coordinate_HG18"=chr_pos[,2],"Chromosome"= chr_pos[,1],"RSquared"=0, "RecombinationRate"=0, "Proxy"=rownames(p_value_weight_multivariate),
+						 "PVAL"=p_value_fat_multivariate, "TYPE"=rep("imputed",length(p_value_weight_multivariate)), stringsAsFactors=F)
+
+for (n in (c(9, 11:12))) {
+
+	top <- new_snps[n,1]
+
+	top_chr_pos <- strsplit(top, ":")
+	top_chr_pos <- do.call(cbind, top_chr_pos)
+	top_chr_pos <- apply(top_chr_pos, 2, as.numeric)
+
+	snp <- subset(for_plot,  for_plot[,2]==top_chr_pos[1,1], select=1:7)
+	snp <- subset(snp, snp[,1]<(top_chr_pos[2,1]+500000), select=1:7)
+	snp <- subset(snp, snp[,1]>(top_chr_pos[2,1]-500000), select=1:7)
+
+	z_snp <- s_all[which(rownames(s_all) %in% snp[,5]),]
+
+	z_top <- z_snp[which(rownames(z_snp) %in% top),]
+
+	r_snp <- cor(t(z_top), t(z_snp))
+
+	r2_snp <- r_snp^2 
+
+	snp[,3] <- t(r2_snp) 
+
+	colnames(snp[,3]) <- c("RSquared")
+
+	if (length(snp[snp$PVAL==min(snp$PVAL, na.rm=T),1])>1) {
+
+		snp[grepl(top, snp$Proxy),"PVAL"] <- snp[grepl(top, snp$Proxy),"PVAL"]-0.00000000000001
+
+	}
+
+	write.table(snp, paste("/home/common/projects/ovine_selection/ovines_multivariate_analysis/data/for_regional_association_plot/locus_table_", top, ".txt", sep=""), row.names=F, quote=F)
+
+}
+
 
 # make locus table for 2 interesting regions
 

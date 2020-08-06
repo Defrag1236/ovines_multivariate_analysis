@@ -57,8 +57,8 @@ setwd("/home/common/projects/ovine_selection/ovines_multivariate_analysis/result
 
 	png("manhattan_weight_multivariate.png", width=1920, height=1080)
 
-	manhattan(for_plot_weight, main="Multi weight manhattan plot", ylim=c(0,20), genomewideline=-log10(0.05/(nrow(locus_table)*(48+8))), suggestiveline=F, cex=0.8, 
-    cex.axis=0.9, col=c("blue4", "orange3"))
+	manhattan(for_plot_weight, main="MMass manhattan plot", ylim=c(4,20), genomewideline=-log10(0.05/(nrow(locus_table)*(48+8))), suggestiveline=F, cex=1.2, 
+    cex.axis=1.2, col=c("blue4", "orange3"))
 
 	dev.off()
 
@@ -66,8 +66,8 @@ setwd("/home/common/projects/ovine_selection/ovines_multivariate_analysis/result
 
 	png("manhattan_fat_multivariate.png", width=1920, height=1080)
 
-	manhattan(for_plot_fat, main="Multi fat manhattan plot", ylim=c(0,20), genomewideline=-log10(0.05/(nrow(locus_table)*(48+8))), suggestiveline=F, cex=0.8, 
-    cex.axis=0.9, col=c("blue4", "orange3"))
+	manhattan(for_plot_fat, main="MFat manhattan plot", ylim=c(4,20), genomewideline=-log10(0.05/(nrow(locus_table)*(48+8))), suggestiveline=F, cex=1.2, 
+    cex.axis=1.2, col=c("blue4", "orange3"))
 
 	dev.off()
 	
@@ -75,8 +75,8 @@ setwd("/home/common/projects/ovine_selection/ovines_multivariate_analysis/result
 
 	png("manhattan_muscle_multivariate.png", width=1920, height=1080)
 
-	manhattan(for_plot_muscle, main="Multi muscle manhattan plot", ylim=c(0,20), genomewideline=-log10(0.05/(nrow(locus_table)*(48+8))), suggestiveline=F, cex=0.8, 
-    cex.axis=0.9, col=c("blue4", "orange3"))
+	manhattan(for_plot_muscle, main="MMeat manhattan plot", ylim=c(4,20), genomewideline=-log10(0.05/(nrow(locus_table)*3)), suggestiveline=F, cex=1.2, 
+    cex.axis=1.2, col=c("blue4", "orange3"))
 
 	dev.off()
 
@@ -110,3 +110,26 @@ setwd("/home/common/projects/ovine_selection/ovines_multivariate_analysis/result
 	dev.off()
 
 
+# make common manhattan with best p_value from each trait
+
+for_plot_common <- for_plot_weight[,-4]
+
+p_common_all <- cbind(for_plot_weight$P, for_plot_fat$P, for_plot_muscle$P)
+
+p_common_min <- apply(p_common, 1, min)
+
+for_plot_common <- cbind(for_plot_common, p_common_min)
+
+colnames(for_plot_common)[4] <- "P"
+
+
+library("RColorBrewer")
+
+setwd("/home/common/projects/ovine_selection/ovines_multivariate_analysis/results/plots/manhattan")
+
+png("manhattan_common_multivariate.png", width=1920, height=1080)
+
+manhattan(for_plot_common, ylim=c(0,15), genomewideline=-log10(0.05/(nrow(locus_table)*3)), suggestiveline=F, cex=1.2, 
+    		cex.axis=1.6, col=brewer.pal(n = 8, name = "Dark2"))
+
+dev.off()
